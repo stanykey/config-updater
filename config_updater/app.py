@@ -12,8 +12,8 @@ from typing import Generator
 from typing import List
 from typing import Optional
 from typing import Sequence
+from typing import TextIO
 from typing import Union
-from typing.io import TextIO
 
 
 @dataclass
@@ -50,6 +50,11 @@ class Arguments:
     fields: List[Field]
 
 
+class CaseSensitiveConfigParser(ConfigParser):
+    def optionxform(self, option_str: str) -> str:
+        return option_str
+
+
 def get_arguments(args: Sequence[str]) -> Arguments:
     """Parse command-line arguments and return them."""
     parser = ArgumentParser(prog="config-updater")
@@ -66,17 +71,19 @@ def get_arguments(args: Sequence[str]) -> Arguments:
     return Arguments(file=options.file, fields=options.params)
 
 
-def load_config(file: TextIO) -> ConfigParser:
+def load_config(file: TextIO, delimiters: Sequence[str] = ("=",)) -> ConfigParser:
     """Load config from the `file`."""
-    config = ConfigParser()
+    config = CaseSensitiveConfigParser(delimiters=delimiters)
     config.read_file(file)
     return config
 
 
 def update_config(config: ConfigParser, values: List[Field]) -> None:
     """Update (override) config with **values** from the **list**."""
-    # TODO: add main magic here
-    pass
+    for pair in values:
+        for section in config.sections():
+            if pair.name in config.options(section):
+                config.set(section, pair.name, pair.value)
 
 
 def save_config(config: ConfigParser, file: TextIO) -> None:
