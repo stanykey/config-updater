@@ -5,7 +5,6 @@ Simple tool to update/override cfg (ini) files from build scripts or CI pipeline
 Project limitations:
   - Python 3.8 (comes with Ubuntu 20.04)
   - Only built-in packages are allowed
-  - all production code must be in one file
 
 ---
 

@@ -2,10 +2,10 @@ from io import StringIO
 from unittest import main
 from unittest import TestCase
 
-from config_updater.app import Field
-from config_updater.app import load_config
-from config_updater.app import save_config
 from config_updater.app import update_config
+from config_updater.arguments import Field
+from config_updater.config_reader import load_config
+from config_updater.config_reader import save_config
 
 
 TEST_CONFIG = """

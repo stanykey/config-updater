@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest import main
 from unittest import TestCase
 
-from config_updater.app import get_arguments
+from config_updater.arguments import get_arguments
 
 
 class ArgumentsTest(TestCase):
