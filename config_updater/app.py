@@ -1,16 +1,40 @@
 """Simple tool to update/override cfg (ini) files from build scripts or CI pipelines via parameters."""
 from configparser import ConfigParser
 from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
-from sys import argv
-from sys import stderr
+from sys import exit
 from typing import Generator
 from typing import List
 
-from config_updater.arguments import Field
-from config_updater.arguments import get_arguments
+from click import argument
+from click import command
+from click import echo
+
 from config_updater.config_reader import load_config
 from config_updater.config_reader import save_config
+
+
+@dataclass
+class Field:
+    name: str = ""
+    value: str = ""
+
+    @classmethod
+    def from_string(cls, kv_pair: str) -> "Field":
+        name, sep, value = kv_pair.partition("=")
+        if not sep:
+            raise ValueError("invalid field value format")
+
+        return cls(name, value)
+
+
+def log_info(message: str) -> None:
+    echo(message)
+
+
+def log_error(message: str) -> None:
+    echo(message, err=True)
 
 
 @contextmanager
@@ -19,10 +43,7 @@ def config_file(file: Path) -> Generator[ConfigParser, None, None]:
     with open(file, encoding="utf-8") as io:
         config = load_config(io)
 
-    try:
-        yield config
-    except RuntimeError:
-        return
+    yield config
 
     with open(file, "w", encoding="utf-8") as io:
         save_config(config, io)
@@ -36,17 +57,27 @@ def update_config(config: ConfigParser, values: List[Field]) -> None:
                 config.set(section, pair.name, pair.value)
 
 
-def main() -> None:
+@command()
+@argument("file", type=Path)
+@argument("params", nargs=-1, type=str)
+def main(file: Path, params: List[str]) -> int:
     """Application entry point."""
     try:
-        args = get_arguments(argv[1:], __doc__)
-    except ValueError as error:
-        print(error, file=stderr)
-        exit(1)
+        file = file.resolve(strict=True)
+    except FileNotFoundError:
+        log_error(f"config file ({file}) is missing")
+        return 1
 
-    with config_file(args.file) as config:
-        update_config(config, args.fields)
+    try:
+        fields = [Field.from_string(kv_pair) for kv_pair in params]
+        with config_file(file) as config:
+            update_config(config, fields)
+    except RuntimeError as ex:
+        log_error(f"error: {ex}")
+        return 1
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
