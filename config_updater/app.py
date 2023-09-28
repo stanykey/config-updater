@@ -59,7 +59,7 @@ def update_config(config: ConfigParser, values: List[Field]) -> None:
 
 @command()
 @argument("file", type=Path)
-@argument("params", nargs=-1, type=str)
+@argument("params", nargs=-1, type=str, required=True)
 def main(file: Path, params: List[str]) -> int:
     """Application entry point."""
     try:
