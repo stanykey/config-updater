@@ -1,4 +1,5 @@
 """Simple tool to update/override cfg (ini) files from build scripts or CI pipelines via parameters."""
+
 from configparser import ConfigParser
 from contextlib import contextmanager
 from dataclasses import dataclass

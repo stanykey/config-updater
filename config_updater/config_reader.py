@@ -1,4 +1,5 @@
 """Tweaked version of ConfigParser that supports case-sensitive keys."""
+
 from configparser import ConfigParser
 from typing import Sequence
 from typing import TextIO
