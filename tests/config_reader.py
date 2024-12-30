@@ -93,10 +93,7 @@ class ConfigTest(TestCase):
         with StringIO(TEST_CONFIG) as input_file:
             config = load_config(input_file)
 
-        fields = [
-            Field(section="general", name="depot.link"),
-            Field(section="general", name="platform"),
-        ]
+        fields = [Field(section="general", name="depot.link"), Field(section="general", name="platform")]
         remove_config_fields(config, fields)
 
         output_file = StringIO()

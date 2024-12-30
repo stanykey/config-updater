@@ -5,7 +5,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from sys import exit
 from typing import Generator
-from typing import List
 
 from click import argument
 from click import echo
@@ -51,13 +50,14 @@ def cli(ctx: object, file: Path) -> None:
         log_error(f"config file ({file}) is missing")
         exit(1)
 
-    setattr(ctx, "obj", file)  # don't change the attribute name (obj); it's the `click` framework requirement
+    # don't change the attribute name (obj)
+    setattr(ctx, "obj", file)  # noqa: B010 (it's the `click` framework requirement)
 
 
 @cli.command(name="update", options_metavar="")
 @argument("params", nargs=-1, type=str, required=True, metavar="<SECTION.NAME=VALUE>...")
 @pass_obj
-def update_command(file: Path, params: List[str]) -> None:
+def update_command(file: Path, params: list[str]) -> None:
     """Update (override) or add config fields."""
     try:
         fields = [Field.from_string(field_string) for field_string in params]
@@ -71,7 +71,7 @@ def update_command(file: Path, params: List[str]) -> None:
 @cli.command(name="remove", options_metavar="")
 @argument("params", nargs=-1, type=str, required=True, metavar="<SECTION.NAME>...")
 @pass_obj
-def remove_command(file: Path, params: List[str]) -> None:
+def remove_command(file: Path, params: list[str]) -> None:
     """Remove config fields if existed."""
     try:
         fields = [Field.from_string(field_str, without_value=True) for field_str in params]

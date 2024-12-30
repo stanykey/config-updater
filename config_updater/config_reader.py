@@ -2,7 +2,7 @@
 
 from configparser import ConfigParser
 from dataclasses import dataclass
-from typing import List
+from typing import Self
 from typing import Sequence
 from typing import TextIO
 
@@ -31,7 +31,7 @@ class Field:
     value: str = ""
 
     @classmethod
-    def from_string(cls, raw_string: str, *, without_value: bool = False) -> "Field":
+    def from_string(cls, raw_string: str, *, without_value: bool = False) -> Self:
         """Create instance from `raw_string`."""
         section, sep, rest = raw_string.partition(".")
         if not sep:
@@ -47,7 +47,7 @@ class Field:
         return cls(section.strip(), name.strip(), value.strip())
 
 
-def update_config_fields(config: ConfigParser, fields: List[Field]) -> None:
+def update_config_fields(config: ConfigParser, fields: list[Field]) -> None:
     """Update (override) config with **values** from the **list**."""
     for field in fields:
         if not config.has_section(field.section):
@@ -56,7 +56,7 @@ def update_config_fields(config: ConfigParser, fields: List[Field]) -> None:
         config.set(field.section, field.name, field.value)
 
 
-def remove_config_fields(config: ConfigParser, fields: List[Field]) -> None:
+def remove_config_fields(config: ConfigParser, fields: list[Field]) -> None:
     """Update (override) config with **values** from the **list**."""
     for field in fields:
         if config.has_section(field.section) and config.has_option(field.section, field.name):
