@@ -1,10 +1,55 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-force_single_line = "true"
+[tool.poetry]
+name = "config-updater"
+version = "1.0.0"
+description = "Simple tool to update/override cfg (ini) files from build scripts or CI pipelines via parameters"
+authors = ["Sergii Lovygin <lovygin.dev@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/stanykey/config-updater"
+repository = "https://github.com/stanykey/config-updater"
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+click = "*"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "*"
+ruff = "*"
+mypy = "*"
+
+[tool.poetry.scripts]
+config-updater = "config_updater.app:cli"
+
+[tool.ruff]
+fix = true
+line-length = 120
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = true
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B"]
+extend-select = ["I"]
+ignore = ["E501"]
+unfixable = ["B"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
 
 [tool.mypy]
 show_error_codes = true
