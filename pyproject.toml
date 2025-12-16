@@ -1,27 +1,38 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build"]
+build-backend = "uv_build"
 
-[tool.poetry]
+[project]
 name = "config-updater"
 version = "1.0.0"
 description = "Simple tool to update/override cfg (ini) files from build scripts or CI pipelines via parameters"
-authors = ["Sergii Lovygin <lovygin.dev@gmail.com>"]
-license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/stanykey/config-updater"
-repository = "https://github.com/stanykey/config-updater"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Sergii Lovygin", email = "lovygin.dev@gmail.com" },
+]
 
-[tool.poetry.dependencies]
-python = ">=3.12"
-click = "*"
+dependencies = [
+    "click",
+]
 
-[tool.poetry.dev-dependencies]
-pre-commit = "*"
-ruff = "*"
-mypy = "*"
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "ruff",
+    "mypy",
+]
 
-[tool.poetry.scripts]
+[tool.uv.build-backend]
+module-root = ""
+
+[project.urls]
+Homepage = "https://github.com/stanykey/config-updater"
+Repository = "https://github.com/stanykey/config-updater"
+
+[project.scripts]
 config-updater = "config_updater.app:cli"
 
 [tool.ruff]
